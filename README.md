@@ -21,5 +21,5 @@ wget -q -O- https://raw.githubusercontent.com/ioqy/ssh-server-hardening/master/i
 
 ```bash
 sudo rm /etc/ssh/sshd_config.d/01_hardening.conf
-systemctl restart ssh
+sudo systemctl restart ssh
 ```
