@@ -20,6 +20,5 @@ wget -q -O- https://raw.githubusercontent.com/ioqy/ssh-server-hardening/master/i
 ## Uninstall
 
 ```bash
-sudo rm /etc/ssh/sshd_config.d/01_hardening.conf
-sudo systemctl restart ssh
+sudo "/usr/local/bin/uninstall-ssh-server-hardening.sh"
 ```

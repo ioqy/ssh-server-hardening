@@ -10,27 +10,58 @@ if ! grep --perl-regexp --silent '^[\s]*Include[\s"]*\/etc\/ssh\/sshd_config.d\/
   exit 1
 fi
 
+INSTALLATION_OPTIONS=$(whiptail \
+                        --separate-output \
+                        --notags \
+                        --title "SSH Server Hardening" \
+                        --checklist "Options" 20 60 3 \
+                        PermitRootLogin "Permit Root Login" off \
+                        PasswordAuthentication "Permit Authentication via Password" off \
+                        X11Forwarding "Enable X11 Forwarding" no \
+                        3>&1 1>&2 2>&3)
+
+if [ $? != 0 ]; then
+  exit $?
+fi
+
 if [ ! -e "/etc/ssh/sshd_config.d" ]; then
   mkdir /etc/ssh/sshd_config.d
 fi
 
-tee /etc/ssh/sshd_config.d/01_hardening.conf > /dev/null << EOF
-PasswordAuthentication no
+tee "/etc/ssh/sshd_config.d/01_hardening.conf" > /dev/null << EOF
 ChallengeResponseAuthentication no
 KerberosAuthentication no
 GSSAPIAuthentication no
-
-X11Forwarding no
-
 PermitEmptyPasswords no
-
 Protocol 2
-
 ClientAliveInterval 300
 ClientAliveCountMax 2
-
 MaxAuthTries 3
 LoginGraceTime 5m
 EOF
 
+if [[ $INSTALLATION_OPTIONS != *PermitRootLogin* ]]; then
+  echo "PermitRootLogin no" >> "/etc/ssh/sshd_config.d/01_hardening.conf"
+fi
+
+if [[ $INSTALLATION_OPTIONS != *PasswordAuthentication* ]]; then
+  echo "PasswordAuthentication no" >> "/etc/ssh/sshd_config.d/01_hardening.conf"
+fi
+
+if [[ $INSTALLATION_OPTIONS != *X11Forwarding* ]]; then
+  echo "X11Forwarding no" >> "/etc/ssh/sshd_config.d/01_hardening.conf"
+fi
+
+tee "/usr/local/bin/uninstall-ssh-server-hardening.sh" > /dev/null << EOF
+rm "/etc/ssh/sshd_config.d/01_hardening.conf"
+rm "/usr/local/bin/uninstall-ssh-server-hardening.sh"
 systemctl restart ssh
+EOF
+
+chmod u+x "/usr/local/bin/uninstall-ssh-server-hardening.sh"
+
+systemctl restart ssh
+
+whiptail \
+  --title "SSH Server Hardening" \
+  --msgbox 'Installation successful!\n\nTo make sure that an SSH connection is still possible, open a second SSH session while leaving this one open.\n\nIf the connection is not working or you want to remove the hardening, execute  "/usr/local/bin/uninstall-ssh-server-hardening.sh" as root.' 15 60
