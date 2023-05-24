@@ -53,6 +53,7 @@ if [[ $INSTALLATION_OPTIONS != *X11Forwarding* ]]; then
 fi
 
 tee "/usr/local/bin/uninstall-ssh-server-hardening.sh" > /dev/null << EOF
+#!/usr/bin/env bash
 rm "/etc/ssh/sshd_config.d/01_hardening.conf"
 rm "/usr/local/bin/uninstall-ssh-server-hardening.sh"
 systemctl restart ssh
