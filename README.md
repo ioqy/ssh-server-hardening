@@ -8,13 +8,13 @@ The default configuration `/etc/ssh/sshd_config` must contain `Include /etc/ssh/
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ioqy/ssh-server-hardening/master/install.sh | sudo sh
+curl -fsSL https://raw.githubusercontent.com/ioqy/ssh-server-hardening/master/install.sh | sudo bash
 ```
 
 or
 
 ```bash
-wget -q -O- https://raw.githubusercontent.com/ioqy/ssh-server-hardening/master/install.sh | sudo sh
+wget -q -O- https://raw.githubusercontent.com/ioqy/ssh-server-hardening/master/install.sh | sudo bash
 ```
 
 ## Uninstall
