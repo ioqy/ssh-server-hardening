@@ -10,7 +10,7 @@ if ! grep --perl-regexp --silent '^[\s]*Include[\s"]*\/etc\/ssh\/sshd_config.d\/
   exit 1
 fi
 
-INSTALLATION_OPTIONS=$(whiptail \
+installation_options=$(whiptail \
                         --separate-output \
                         --notags \
                         --title "SSH Server Hardening" \
@@ -40,15 +40,15 @@ MaxAuthTries 3
 LoginGraceTime 5m
 EOF
 
-if [[ $INSTALLATION_OPTIONS != *PermitRootLogin* ]]; then
+if [[ $installation_options != *PermitRootLogin* ]]; then
   echo "PermitRootLogin no" >> "/etc/ssh/sshd_config.d/01_hardening.conf"
 fi
 
-if [[ $INSTALLATION_OPTIONS != *PasswordAuthentication* ]]; then
+if [[ $installation_options != *PasswordAuthentication* ]]; then
   echo "PasswordAuthentication no" >> "/etc/ssh/sshd_config.d/01_hardening.conf"
 fi
 
-if [[ $INSTALLATION_OPTIONS != *X11Forwarding* ]]; then
+if [[ $installation_options != *X11Forwarding* ]]; then
   echo "X11Forwarding no" >> "/etc/ssh/sshd_config.d/01_hardening.conf"
 fi
 
